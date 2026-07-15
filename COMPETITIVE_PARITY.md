@@ -11,3 +11,7 @@
 | Announcements | `GET/POST /api/announcements` |
 | Contact | `POST /api/contact` |
 | Web UI | `/` static portal |
+
+## v3
+See GAP_ANALYSIS.md — multi-rail payments + undercut pricing + gap features.
+
