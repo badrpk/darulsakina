@@ -1,54 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Darul Sakina</title>
+<title>Darul Sakina — Community Portal</title>
 <style>
-:root{--c:#0d4f3c;--a:#c9a227}
-body{margin:0;font-family:Georgia,serif;background:#f7f4ef;color:#1a1a1a}
-header{background:var(--c);color:#fff;padding:2rem 1.25rem;text-align:center}
-header h1{margin:0;font-weight:600;letter-spacing:.02em}
-header p{opacity:.9;margin:.5rem 0 0}
-main{max-width:42rem;margin:0 auto;padding:1.5rem 1.25rem}
-.card{background:#fff;border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-h2{color:var(--c);font-size:1.15rem;margin:0 0 .5rem}
-a.btn{display:inline-block;background:var(--a);color:#111;text-decoration:none;padding:.55rem 1rem;border-radius:8px;font-weight:600;margin:.25rem .25rem 0 0}
-footer{text-align:center;padding:2rem;color:#666;font-size:.9rem}
-</style>
-</head>
-<body>
-<header>
-  <h1>Darul Sakina</h1>
-  <p>Community · Faith · Service</p>
-</header>
-<main>
-  <div class="card">
-    <h2>Welcome</h2>
-    <p>Open community portal for events, volunteer coordination, and donations. Not an e-commerce store.</p>
-  </div>
-  <div class="card">
-    <h2>Programs</h2>
-    <ul>
-      <li>Weekly community gatherings</li>
-      <li>Volunteer registration</li>
-      <li>Education support</li>
-      <li>Charitable giving</li>
-    </ul>
-  </div>
-  <div class="card">
-    <h2>Get involved</h2>
-    <a class="btn" href="#volunteer">Volunteer</a>
-    <a class="btn" href="#donate">Donate</a>
-  </div>
-  <div class="card" id="volunteer">
-    <h2>Volunteer</h2>
-    <p>Email the team via your local chapter or open an issue on GitHub to contribute code and content.</p>
-  </div>
-  <div class="card" id="donate">
-    <h2>Donate</h2>
-    <p>Donation integrations can be wired to Stripe / local wallets — contributions welcome via PR.</p>
-  </div>
-</main>
-<footer>Open source · <a href="https://github.com/badrpk/darulsakina">github.com/badrpk/darulsakina</a></footer>
-</body>
-</html>
+ body{font-family:system-ui,sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem;color:#1a1a1a}
+ h1{color:#0b5;}.card{border:1px solid #ddd;border-radius:12px;padding:1rem;margin:.75rem 0}
+ .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+ button{background:#0b5;color:#fff;border:0;padding:.5rem 1rem;border-radius:8px;cursor:pointer}
+ input,select,textarea{width:100%;padding:.5rem;margin:.25rem 0 .75rem;border:1px solid #ccc;border-radius:8px}
+</style></head><body>
+<h1>🕌 Darul Sakina</h1>
+<p>Community & faith portal — events, prayer times, donations, volunteers.</p>
+<div class="grid">
+  <div class="card"><h3>Prayer times</h3><div id="prayer">Loading…</div></div>
+  <div class="card"><h3>Announcements</h3><div id="ann">…</div></div>
+</div>
+<div class="card"><h3>Upcoming events</h3><div id="events"></div></div>
+<div class="card"><h3>Donate</h3>
+  <input id="dname" placeholder="Name"/><input id="damt" type="number" placeholder="Amount PKR"/>
+  <button onclick="donate()">Give</button><span id="dmsg"></span>
+</div>
+<script>
+async function j(u,o){const r=await fetch(u,o);return r.json()}
+async function load(){
+  const p=await j('/api/prayer-times?city=Karachi');
+  document.getElementById('prayer').innerHTML=Object.entries(p.times).map(([k,v])=>`<div><b>${k}</b>: ${v}</div>`).join('');
+  const a=await j('/api/announcements');
+  document.getElementById('ann').innerHTML=a.announcements.map(x=>`<div><b>${x.title}</b><br/><small>${x.body}</small></div>`).join('')||'None';
+  const e=await j('/api/events');
+  document.getElementById('events').innerHTML=e.events.map(x=>`<div class="card"><b>${x.title}</b> — ${x.date} ${x.time}<br/>${x.location} · RSVP ${x.rsvp}/${x.capacity}
+  <button onclick="rsvp('${x.id}')">RSVP</button></div>`).join('');
+}
+async function rsvp(id){await j('/api/events/'+id+'/rsvp',{method:'POST'});load()}
+async function donate(){
+  const r=await j('/api/donations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:dname.value,amount_pkr:+damt.value,method:'bank'})});
+  dmsg.textContent=r.ok?(' Receipt '+r.receipt):r.error;
+  load();
+}
+load();
+</script>
+</body></html>
