@@ -1,18 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Darul Sakina</title>
-  <style>
-    body{font-family:system-ui,sans-serif;max-width:40rem;margin:2rem auto;padding:0 1rem;line-height:1.5}
-    h1{color:#0b5fff} .ok{color:#0a7} code{background:#f4f4f4;padding:.1rem .3rem;border-radius:4px}
-  </style>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Darul Sakina</title>
+<style>
+:root{--c:#0d4f3c;--a:#c9a227}
+body{margin:0;font-family:Georgia,serif;background:#f7f4ef;color:#1a1a1a}
+header{background:var(--c);color:#fff;padding:2rem 1.25rem;text-align:center}
+header h1{margin:0;font-weight:600;letter-spacing:.02em}
+header p{opacity:.9;margin:.5rem 0 0}
+main{max-width:42rem;margin:0 auto;padding:1.5rem 1.25rem}
+.card{background:#fff;border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+h2{color:var(--c);font-size:1.15rem;margin:0 0 .5rem}
+a.btn{display:inline-block;background:var(--a);color:#111;text-decoration:none;padding:.55rem 1rem;border-radius:8px;font-weight:600;margin:.25rem .25rem 0 0}
+footer{text-align:center;padding:2rem;color:#666;font-size:.9rem}
+</style>
 </head>
 <body>
+<header>
   <h1>Darul Sakina</h1>
-  <p class="ok">Status: online scaffold</p>
-  <p>Community & faith organization web portal (events, donations, volunteers) — not e-commerce.</p>
-  <p>Unique product in the <strong>badrpk</strong> portfolio. See <code>PORTFOLIO.md</code>.</p>
+  <p>Community · Faith · Service</p>
+</header>
+<main>
+  <div class="card">
+    <h2>Welcome</h2>
+    <p>Open community portal for events, volunteer coordination, and donations. Not an e-commerce store.</p>
+  </div>
+  <div class="card">
+    <h2>Programs</h2>
+    <ul>
+      <li>Weekly community gatherings</li>
+      <li>Volunteer registration</li>
+      <li>Education support</li>
+      <li>Charitable giving</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Get involved</h2>
+    <a class="btn" href="#volunteer">Volunteer</a>
+    <a class="btn" href="#donate">Donate</a>
+  </div>
+  <div class="card" id="volunteer">
+    <h2>Volunteer</h2>
+    <p>Email the team via your local chapter or open an issue on GitHub to contribute code and content.</p>
+  </div>
+  <div class="card" id="donate">
+    <h2>Donate</h2>
+    <p>Donation integrations can be wired to Stripe / local wallets — contributions welcome via PR.</p>
+  </div>
+</main>
+<footer>Open source · <a href="https://github.com/badrpk/darulsakina">github.com/badrpk/darulsakina</a></footer>
 </body>
 </html>
