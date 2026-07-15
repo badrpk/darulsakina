@@ -7,6 +7,7 @@ const path = require("path");
 const { URL } = require("url");
 const crypto = require("crypto");
 const pay = require("./payments");
+const auth = require("./auth");
 const PORT = process.env.PORT || 8765;
 const uid = (p = "id") => `${p}_${crypto.randomBytes(5).toString("hex")}`;
 const iso = () => new Date().toISOString();
@@ -52,13 +53,24 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "OPTIONS") return json(res, 204, {});
   const u = new URL(req.url, `http://127.0.0.1:${PORT}`);
   const p = u.pathname.replace(/\/$/, "") || "/";
+  // AUTH_ROUTER_V1
+  if (typeof p === "string" && (p === "/auth" || p.startsWith("/auth/"))) {
+    let bodyObj = {};
+    if (req.method === "POST" || req.method === "PUT" || req.method === "PATCH") {
+      bodyObj = await new Promise((resolve) => {
+        let d = ""; req.on("data", c => d += c); req.on("end", () => { try { resolve(JSON.parse(d || "{}")); } catch { resolve({}); } });
+      });
+    }
+    const result = await auth.handleAuth(req.method, p, bodyObj, req.headers, "darulsakina");
+    return json(res, result.status, result.body);
+  }
 
   if (req.method === "GET" && (p === "/api" || p === "/api/health")) {
     return json(res, 200, { ok: true, service: "darulsakina", version: "3.0.0",
       gaps_closed: ["zakat_calculator", "recurring_donations", "membership", "multi_rail_pay", "low_fees"] });
   }
   if (p === "/api/capabilities") return json(res, 200, { ok: true, competitor: "MosqueFinder / donation platforms",
-    features: ["prayer_times","events_rsvp","donations","volunteers","announcements","zakat","membership","stripe","jazzcash"] });
+    features: ["prayer_times","events_rsvp","donations","volunteers","announcements","zakat","membership","stripe", "signup", "login", "otp", "oauth_google", "oauth_facebook","jazzcash"] });
   if (p === "/api/pricing") return json(res, 200, { ok: true, ...pay.pricing("darulsakina") });
   if (p === "/api/payments/rails") return json(res, 200, { ok: true, rails: pay.RAILS });
   if (p === "/api/gap-analysis") return json(res, 200, { ok: true, added: ["zakat calc", "recurring donations", "membership", "stripe multi-rail", "0.5% fee vs ~2.9%"] });
