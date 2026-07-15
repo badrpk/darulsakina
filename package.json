@@ -1,0 +1,1 @@
+{"name":"darulsakina","version":"1.0.0","scripts":{"start":"node server.js","test":"node -e \"require('fs').accessSync('public/index.html');console.log('ok')\"}"}}
